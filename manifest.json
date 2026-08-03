@@ -1,0 +1,12 @@
+{
+  "name": "Sobe Desce — Placar",
+  "short_name": "Sobe Desce",
+  "description": "Placar para partidas do jogo de cartas Sobe Desce.",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#eef4f8",
+  "theme_color": "#102a43",
+  "lang": "pt-BR",
+  "icons": [{ "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }]
+}
+

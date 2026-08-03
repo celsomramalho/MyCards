@@ -1,0 +1,207 @@
+const STORAGE_KEY = "sobe-desce-partida-atual";
+const CARDS = [1, 2, 3, 4, 5, 6, 6, 5, 4, 3, 2, 1];
+const TOTAL_ROUNDS = CARDS.length;
+const app = document.querySelector("#app");
+const installButton = document.querySelector("#installButton");
+let deferredInstall;
+let state = loadState();
+
+window.addEventListener("beforeinstallprompt", event => {
+  event.preventDefault();
+  deferredInstall = event;
+  installButton.classList.remove("hidden");
+});
+installButton.addEventListener("click", async () => {
+  if (!deferredInstall) return;
+  deferredInstall.prompt();
+  await deferredInstall.userChoice;
+  deferredInstall = null;
+  installButton.classList.add("hidden");
+});
+if ("serviceWorker" in navigator) window.addEventListener("load", () => navigator.serviceWorker.register("sw.js").catch(() => {}));
+
+function loadState() {
+  try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || "null"); } catch { return null; }
+}
+function persist() { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }
+function uid() { return `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`; }
+function decks(count) { return Math.ceil(count / 7); }
+function escapeHtml(value) {
+  return String(value).replace(/[&<>'"]/g, char => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", "'": "&#39;", '"': "&quot;" }[char]));
+}
+function playerById(playerId) { return state.players.find(player => player.id === playerId); }
+function roundData(number) { return state.historicoRodadas.find(round => round.numero === number); }
+function orderForDealer(dealerId) {
+  const index = state.players.findIndex(player => player.id === dealerId);
+  return [...state.players.slice(index), ...state.players.slice(0, index)].map(player => player.id);
+}
+function currentOrder() {
+  if (state.editingRound) return roundData(state.editingRound)?.ordemIds || orderForDealer(state.dealerId);
+  return orderForDealer(state.dealerId);
+}
+function emptyDraft(order = currentOrder()) {
+  return {
+    palpitesSalvos: false,
+    rodadaSalva: false,
+    players: order.map(playerId => ({ playerId, palpite: "0", acertouPalpite: false, ganhouRodada: false }))
+  };
+}
+function draftForRound(number) {
+  const round = roundData(number);
+  if (round) {
+    return {
+      palpitesSalvos: false,
+      rodadaSalva: false,
+      players: round.jogadores.map(player => ({ ...player, palpite: String(player.palpite) }))
+    };
+  }
+  if (state.draft?.players?.length) return state.draft;
+  return emptyDraft();
+}
+function newGame() {
+  state = { status: "setup", players: [], quantidadeBaralhos: 0, cartasPorRodada: CARDS, rodadaAtual: 1, dealerId: null, historicoRodadas: [], draft: { players: [] }, editingRound: null };
+  persist();
+  render();
+}
+function resetGame() {
+  if (!confirm("Reiniciar a partida? Todos os dados atuais serão apagados.")) return;
+  newGame();
+}
+function startGame(names, dealerIndex) {
+  const players = names.map(nome => ({ id: uid(), nome, pontuacaoCumulativa: 0 }));
+  state = { status: "em_andamento", players, quantidadeBaralhos: decks(players.length), cartasPorRodada: CARDS, rodadaAtual: 1, dealerId: players[dealerIndex].id, historicoRodadas: [], draft: { players: [] }, editingRound: null };
+  state.draft = emptyDraft();
+  persist();
+  render();
+}
+function showHome() {
+  app.innerHTML = `<section class="card narrow"><p class="eyebrow">Placar simples e offline</p><h2>Comece uma partida</h2><p class="muted">Cadastre os jogadores, defina quem começa dando as cartas e acompanhe a pontuação nas 12 rodadas.</p><div class="home-actions"><button class="button" data-action="new" type="button">Novo jogo</button>${state ? `<button class="button secondary" data-action="continue" type="button">Continuar partida</button>` : ""}</div></section>`;
+  app.querySelector('[data-action="new"]').addEventListener("click", newGame);
+  app.querySelector('[data-action="continue"]').addEventListener("click", render);
+}
+function showSetup() {
+  app.innerHTML = `<section class="card narrow"><p class="eyebrow">Configuração</p><h2>Cadastre os jogadores</h2><p class="muted">A ordem da primeira rodada começará por quem der as cartas. Depois, o vencedor da rodada assume essa função.</p><form id="setupForm"><div class="form-row"><label>Quantidade de jogadores<input id="playerCount" type="number" min="2" step="1" value="${Math.max(2, state.players.length || 2)}" required /></label><div id="deckInfo" class="notice">Informe a quantidade para calcular os baralhos.</div></div><div id="playerNames"></div><div id="dealerChoice" class="hidden"></div><div id="setupError" class="notice error hidden"></div><div class="actions"><button class="button" type="submit">Iniciar jogo</button><button class="button ghost" type="button" data-action="home">Voltar</button></div></form></section>`;
+  const countInput = app.querySelector("#playerCount");
+  const names = app.querySelector("#playerNames");
+  const dealerChoice = app.querySelector("#dealerChoice");
+  const deckInfo = app.querySelector("#deckInfo");
+  function updateNames() {
+    const count = Number.parseInt(countInput.value, 10);
+    deckInfo.textContent = Number.isInteger(count) && count >= 2 ? `${decks(count)} baralho${decks(count) === 1 ? "" : "s"} recomendado${decks(count) === 1 ? "" : "s"} (informação operacional).` : "Informe uma quantidade válida.";
+    names.innerHTML = Number.isInteger(count) && count >= 2 ? Array.from({ length: count }, (_, i) => `<label class="player-name"><span class="player-number">${i + 1}</span><input name="player-${i}" placeholder="Nome do jogador ${i + 1}" value="${escapeHtml(state.players[i]?.nome || "")}" required /></label>`).join("") : "";
+    dealerChoice.innerHTML = Number.isInteger(count) && count >= 2 ? `<label>Quem começa dando as cartas?<select id="dealerSelect" required>${Array.from({ length: count }, (_, i) => `<option value="${i}">${i + 1}. Jogador ${i + 1}</option>`).join("")}</select></label>` : "";
+    dealerChoice.classList.toggle("hidden", !(Number.isInteger(count) && count >= 2));
+    names.querySelectorAll("input").forEach(input => input.addEventListener("input", () => {
+      const select = app.querySelector("#dealerSelect");
+      if (!select) return;
+      [...names.querySelectorAll("input")].forEach((nameInput, index) => { select.options[index].textContent = `${index + 1}. ${nameInput.value.trim() || `Jogador ${index + 1}`}`; });
+    }));
+  }
+  countInput.addEventListener("input", updateNames);
+  updateNames();
+  app.querySelector("#setupForm").addEventListener("submit", event => {
+    event.preventDefault();
+    const count = Number.parseInt(countInput.value, 10);
+    const values = [...names.querySelectorAll("input")].map(input => input.value.trim());
+    const dealerIndex = Number.parseInt(app.querySelector("#dealerSelect")?.value, 10);
+    const error = app.querySelector("#setupError");
+    if (!Number.isInteger(count) || count < 2 || values.length !== count || values.some(value => !value) || !Number.isInteger(dealerIndex)) {
+      error.textContent = "Informe pelo menos 2 jogadores, preencha todos os nomes e selecione quem começa dando as cartas.";
+      error.classList.remove("hidden");
+      return;
+    }
+    startGame(values, dealerIndex);
+  });
+  app.querySelector('[data-action="home"]').addEventListener("click", showHome);
+}
+function validatePalpites(values, roundNumber) {
+  const cards = CARDS[roundNumber - 1];
+  const errors = [];
+  if (values.some(item => !/^\d+$/.test(String(item.palpite)))) errors.push("Todos os palpites devem ser números inteiros maiores ou iguais a zero.");
+  values.forEach(item => { if (Number(item.palpite) > cards) errors.push(`O palpite de ${playerById(item.playerId).nome} não pode passar de ${cards}.`); });
+  const totalPalpites = values.reduce((sum, item) => sum + Number(item.palpite), 0);
+  if (totalPalpites === cards) errors.push(`A soma dos palpites não pode ser igual a ${cards}, que é a quantidade de cartas da rodada.`);
+  return errors;
+}
+function updateScores() {
+  state.players.forEach(player => { player.pontuacaoCumulativa = state.historicoRodadas.reduce((sum, round) => sum + (round.jogadores.find(item => item.playerId === player.id)?.pontosRodada || 0), 0); });
+  state.historicoRodadas.forEach(round => round.jogadores.forEach(item => { item.pontosCumulativos = playerById(item.playerId).pontuacaoCumulativa; }));
+}
+function roundFromValues(values, roundNumber, orderIds) {
+  const winners = values.filter(item => item.ganhouRodada).length;
+  return { numero: roundNumber, dealerId: orderIds[0], ordemIds: orderIds, quantidadeCartas: CARDS[roundNumber - 1], houveEmpate: winners > 1, jogadores: values.map(item => ({ ...item, palpite: Number(item.palpite), pontosAcerto: item.acertouPalpite ? 5 : 0, pontosVitoria: item.ganhouRodada ? 1 : 0, pontosRodada: (item.acertouPalpite ? 5 : 0) + (item.ganhouRodada ? 1 : 0), pontosCumulativos: 0 })) };
+}
+function savePalpites(values) {
+  const errors = validatePalpites(values, state.editingRound || state.rodadaAtual);
+  const error = app.querySelector("#roundError");
+  if (errors.length) { error.innerHTML = errors.map(escapeHtml).join("<br>"); error.classList.remove("hidden"); return; }
+  state.draft = { palpitesSalvos: true, rodadaSalva: false, players: values };
+  persist();
+  render();
+}
+function saveRound(values) {
+  if (!state.draft.palpitesSalvos) return;
+  const roundNumber = state.editingRound || state.rodadaAtual;
+  const round = roundFromValues(values, roundNumber, currentOrder());
+  const existing = state.historicoRodadas.findIndex(item => item.numero === roundNumber);
+  if (state.editingRound) {
+    if (existing >= 0) state.historicoRodadas[existing] = round;
+    updateScores();
+    state.editingRound = null;
+    state.draft = emptyDraft();
+  } else {
+    state.draft = { palpitesSalvos: true, rodadaSalva: true, players: values, result: round };
+  }
+  persist();
+  render();
+}
+function advanceRound() {
+  if (!state.draft.rodadaSalva || !state.draft.result) return;
+  const round = state.draft.result;
+  state.historicoRodadas.push(round);
+  state.historicoRodadas.sort((a, b) => a.numero - b.numero);
+  updateScores();
+  const winner = round.jogadores.find(item => item.ganhouRodada);
+  if (winner) state.dealerId = winner.playerId;
+  if (state.rodadaAtual === TOTAL_ROUNDS) state.status = "finalizada";
+  else { state.rodadaAtual += 1; state.draft = emptyDraft(); }
+  persist();
+  render();
+}
+function renderScoreboard() {
+  return `<section class="card"><h2>Placar geral</h2><div class="score-list">${state.players.map(player => `<div class="score-row"><div><strong>${escapeHtml(player.nome)}</strong><small>${player.id === state.dealerId ? "Distribui as cartas na próxima rodada" : ""}</small></div><div class="cumulative">${player.pontuacaoCumulativa}</div></div>`).join("")}</div><div class="history"><h3>Rodadas encerradas</h3><div class="history-list">${state.historicoRodadas.length ? state.historicoRodadas.map(item => `<div class="history-item"><span>Rodada ${item.numero} · ${item.quantidadeCartas} carta${item.quantidadeCartas === 1 ? "" : "s"}${item.houveEmpate ? " · empate" : ""}</span><button class="button ghost" data-edit="${item.numero}" type="button">Editar</button></div>`).join("") : `<p class="muted">Nenhuma rodada encerrada ainda.</p>`}</div></div></section>`;
+}
+function renderGame() {
+  const round = state.editingRound || state.rodadaAtual;
+  const editing = Boolean(state.editingRound);
+  const draft = state.editingRound && !state.draft?.players?.length ? draftForRound(round) : (state.draft?.players?.length ? state.draft : draftForRound(round));
+  const values = draft.players;
+  const locked = Boolean(draft.palpitesSalvos);
+  const result = draft.result;
+  app.innerHTML = `<div class="meta-grid"><div class="meta"><span>Rodada atual</span><strong>${state.rodadaAtual} de ${TOTAL_ROUNDS}</strong></div><div class="meta"><span>Cartas nesta rodada</span><strong>${CARDS[round - 1]}</strong></div><div class="meta"><span>Próxima rodada</span><strong>${state.rodadaAtual < TOTAL_ROUNDS ? `${CARDS[state.rodadaAtual]} cartas` : "Fim"}</strong></div><div class="meta"><span>Distribuidor</span><strong>${escapeHtml(playerById(currentOrder()[0])?.nome || "—")}</strong></div></div><div class="game-layout">${renderScoreboard()}<section class="card"><p class="eyebrow">${editing ? "Edição da rodada" : "Rodada atual"}</p><h2>${editing ? `Editar rodada ${round}` : `Registre a rodada ${round}`}</h2><p class="hint">A ordem começa por quem dá as cartas. Primeiro salve os palpites; depois informe acerto e vitória.</p><form id="roundForm" class="round-card">${values.map((item, i) => { const player = playerById(item.playerId); const points = result?.jogadores.find(row => row.playerId === item.playerId)?.pontosRodada; return `<article class="round-player"><div class="round-player-head"><h3>${i + 1}. ${escapeHtml(player.nome)}${i === 0 ? ` <span class="dealer-note">(quem deve distribuir as cartas)</span>` : i === 1 ? ` <span class="dealer-note">(deve ser o primeiro a abrir a carta e determina o nípe)</span>` : ""}</h3><span class="pill">${i === 0 ? "Começa o palpite" : "Máx. " + CARDS[round - 1]}</span></div><div class="round-fields"><label>Palpite<input data-field="palpite" data-index="${i}" type="number" min="0" max="${CARDS[round - 1]}" step="1" inputmode="numeric" value="${escapeHtml(item.palpite ?? "0")}" ${locked ? "disabled" : "required"} /></label><label>Acertou?<select data-field="acertouPalpite" data-index="${i}" ${!locked || result ? "disabled" : ""}><option value="false" ${!item.acertouPalpite ? "selected" : ""}>Não</option><option value="true" ${item.acertouPalpite ? "selected" : ""}>Sim</option></select></label><label>Ganhou a rodada?<select data-field="ganhouRodada" data-index="${i}" ${!locked || result ? "disabled" : ""}><option value="false" ${!item.ganhouRodada ? "selected" : ""}>Não</option><option value="true" ${item.ganhouRodada ? "selected" : ""}>Sim</option></select></label>${result ? `<div class="round-points"><span>Pontos da rodada</span><strong>${points}</strong></div>` : ""}</div></article>`; }).join("")}<div id="roundError" class="notice error hidden"></div><div class="actions">${!locked ? `<button class="button" data-action="save-palpites" type="button">Salvar palpites</button>` : ""}${locked && !result ? `<button class="button" data-action="save-round" type="button">${editing ? "Salvar edição" : "Salvar rodada"}</button>` : ""}${result && !editing ? `<button class="button secondary" data-action="edit-current" type="button">Editar rodada</button><button class="button" data-action="advance" type="button">${round === TOTAL_ROUNDS ? "Finalizar partida" : "Ir para a próxima rodada"}</button>` : ""}${editing && !result ? `<button class="button ghost" data-action="cancel-edit" type="button">Cancelar edição</button>` : ""}<button class="button danger" data-action="reset" type="button">Reiniciar partida</button></div></form></section></div>`;
+  const readValues = () => values.map((item, i) => ({ playerId: item.playerId, palpite: app.querySelector(`[data-field="palpite"][data-index="${i}"]`).value, acertouPalpite: app.querySelector(`[data-field="acertouPalpite"][data-index="${i}"]`).value === "true", ganhouRodada: app.querySelector(`[data-field="ganhouRodada"][data-index="${i}"]`).value === "true" }));
+  app.querySelector('[data-action="save-palpites"]')?.addEventListener("click", () => savePalpites(readValues()));
+  app.querySelector('[data-action="save-round"]')?.addEventListener("click", () => saveRound(readValues()));
+  app.querySelector('[data-action="edit-current"]')?.addEventListener("click", () => { state.draft = { ...state.draft, result: null, rodadaSalva: false, palpitesSalvos: true }; persist(); render(); });
+  app.querySelector('[data-action="advance"]')?.addEventListener("click", advanceRound);
+  app.querySelector('[data-action="cancel-edit"]')?.addEventListener("click", () => { state.editingRound = null; state.draft = emptyDraft(); persist(); render(); });
+  app.querySelector('[data-action="reset"]').addEventListener("click", resetGame);
+  app.querySelectorAll("[data-edit]").forEach(button => button.addEventListener("click", () => { state.editingRound = Number(button.dataset.edit); state.draft = draftForRound(state.editingRound); persist(); render(); }));
+}
+function renderFinished() {
+  const max = Math.max(...state.players.map(player => player.pontuacaoCumulativa));
+  const leaders = state.players.filter(player => player.pontuacaoCumulativa === max);
+  app.innerHTML = `<section class="card"><p class="eyebrow">Partida encerrada</p><h2>Fim de jogo</h2><p class="notice success">${leaders.length > 1 ? `Empate final entre ${leaders.map(player => escapeHtml(player.nome)).join(", ")}.` : `${escapeHtml(leaders[0].nome)} terminou na liderança.`}</p><div class="table-wrap"><table><thead><tr><th>Jogador</th><th>Pontuação final</th></tr></thead><tbody>${[...state.players].sort((a, b) => b.pontuacaoCumulativa - a.pontuacaoCumulativa).map(player => `<tr><td><strong>${escapeHtml(player.nome)}</strong></td><td>${player.pontuacaoCumulativa}</td></tr>`).join("")}</tbody></table></div><div class="history"><h3>Resumo das rodadas</h3><div class="history-list">${state.historicoRodadas.map(item => `<div class="history-item"><span>Rodada ${item.numero} · ${item.quantidadeCartas} carta${item.quantidadeCartas === 1 ? "" : "s"}${item.houveEmpate ? " · empate" : ""}</span><button class="button ghost" data-edit="${item.numero}" type="button">Editar</button></div>`).join("")}</div></div><div class="actions"><button class="button" data-action="new" type="button">Novo jogo</button><button class="button danger" data-action="reset" type="button">Apagar partida</button></div></section>`;
+  app.querySelector('[data-action="new"]').addEventListener("click", newGame);
+  app.querySelector('[data-action="reset"]').addEventListener("click", resetGame);
+  app.querySelectorAll("[data-edit]").forEach(button => button.addEventListener("click", () => { state.status = "em_andamento"; state.editingRound = Number(button.dataset.edit); state.draft = draftForRound(state.editingRound); persist(); render(); }));
+}
+function render() {
+  if (!state) return showHome();
+  if (state.status === "setup") return showSetup();
+  if (state.status === "finalizada") return renderFinished();
+  renderGame();
+}
+render();
+
+
