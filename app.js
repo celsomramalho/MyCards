@@ -18,7 +18,7 @@ installButton.addEventListener("click", async () => {
   deferredInstall = null;
   installButton.classList.add("hidden");
 });
-if ("serviceWorker" in navigator) window.addEventListener("load", () => navigator.serviceWorker.register("sw.js").catch(() => {}));
+if ("serviceWorker" in navigator) window.addEventListener("load", async () => { try { const registration = await navigator.serviceWorker.register("sw.js", { updateViaCache: "none" }); await registration.update(); } catch {} });
 
 function loadState() {
   try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || "null"); } catch { return null; }
@@ -206,6 +206,7 @@ function render() {
   renderGame();
 }
 render();
+
 
 
 
