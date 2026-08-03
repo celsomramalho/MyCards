@@ -38,6 +38,12 @@ h3 { color: var(--navy); font-size: 1rem; margin-bottom: 8px; }
 .hidden { display: none !important; }
 label { display: block; color: var(--navy); font-size: .9rem; font-weight: 700; }
 input, select { width: 100%; border: 1px solid #b8c8d4; border-radius: 10px; background: #fff; color: var(--navy); margin-top: 6px; min-height: 44px; padding: 9px 11px; }
+.number-control { display: flex; align-items: stretch; margin-top: 6px; }
+.number-control input { flex: 1; min-width: 0; margin-top: 0; border-radius: 0; text-align: center; }
+.number-control button { width: 42px; border: 1px solid #b8c8d4; background: #f6f9fb; color: var(--navy); font-size: 1.25rem; font-weight: 800; }
+.number-control button:first-child { border-radius: 10px 0 0 10px; }
+.number-control button:last-child { border-radius: 0 10px 10px 0; }
+.number-control button:disabled { cursor: not-allowed; opacity: .5; }
 input:focus, select:focus, button:focus-visible { outline: 3px solid rgba(31, 111, 235, .25); outline-offset: 2px; }
 .form-row { display: grid; grid-template-columns: 140px 1fr; gap: 12px; align-items: end; }
 .player-name { display: flex; align-items: center; gap: 10px; margin-top: 12px; }
@@ -84,15 +90,15 @@ td strong { color: var(--navy); }
   .game-layout, .grid.two { grid-template-columns: 1fr; }
   .meta-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .round-fields { grid-template-columns: 1fr 1fr; }
-  .round-fields label:first-child { grid-column: 1 / -1; }
-  .round-points { min-height: 42px; }
+  .round-fields label:first-child { grid-column: 1; }
+  .round-points { grid-column: 2; grid-row: 1; min-height: 42px; }
   .form-row { grid-template-columns: 1fr; }
 }
 @media (max-width: 420px) {
   .app-header { display: block; }
   #installButton { margin-top: 14px; }
-  .round-fields { grid-template-columns: 1fr; }
-  .round-fields label:first-child { grid-column: auto; }
+  .round-fields { grid-template-columns: 1fr 1fr; }
+  .round-fields label:first-child { grid-column: 1; }
   .button { width: 100%; }
   .actions { display: grid; }
 }
