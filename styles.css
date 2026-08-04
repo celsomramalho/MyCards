@@ -59,7 +59,7 @@ input:focus, select:focus, button:focus-visible { outline: 3px solid rgba(31, 11
 .meta span { color: var(--muted); font-size: .78rem; }
 .game-layout { display: grid; grid-template-columns: minmax(260px, .8fr) minmax(0, 1.5fr); gap: 16px; align-items: start; }
 .score-list { display: grid; gap: 10px; }
-.scoreboard-header { align-items: center; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; gap: 12px; padding-bottom: 10px; }
+.scoreboard-header { align-items: center; background: white; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; gap: 12px; padding-bottom: 10px; position: sticky; top: 0; z-index: 10; }
 .scoreboard-header h2 { margin-bottom: 0; }
 .scoreboard-summary { color: var(--muted); display: none; font-size: .82rem; margin: 3px 0 0; }
 .collapse-button { align-items: center; background: var(--blue-soft); border: 0; border-radius: 9px; color: #1654a3; display: none; font-size: 1.35rem; font-weight: 900; height: 38px; justify-content: center; width: 42px; }
@@ -102,7 +102,7 @@ td strong { color: var(--navy); }
 .footer .button { display: inline-block; margin-top: 10px; width: auto; }
 @media (max-width: 760px) {
   .app-shell { padding-top: 16px; }
-  .app-header { align-items: flex-start; }
+  .app-header { align-items: flex-start; margin-bottom: 16px; }
   .game-layout, .grid.two { grid-template-columns: 1fr; }
   .meta-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .round-fields { grid-template-columns: 1fr 1fr; }
@@ -113,10 +113,9 @@ td strong { color: var(--navy); }
   .tricks-grid { grid-template-columns: 1fr 1fr; }
   .form-row { grid-template-columns: 1fr; }
   .desktop-round-meta { display: none; }
-  .mobile-round-meta { display: grid; margin: 16px 0 0; }
+  .mobile-round-meta { display: grid; margin: 0; }
   .scoreboard-card { padding: 16px; }
   .scoreboard-header { display: grid; grid-template-columns: 1fr auto; }
-  .scoreboard-header { background: #fff; position: sticky; top: 0; z-index: 10; }
   .mobile-round-meta { grid-column: 1 / -1; }
   .scoreboard-summary { display: block; }
   .collapse-button { display: inline-flex; }
