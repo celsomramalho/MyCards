@@ -84,7 +84,7 @@ input:focus, select:focus, button:focus-visible { outline: 3px solid rgba(31, 11
 .tricks-grid { border: 1px solid var(--border); border-radius: 14px; display: grid; gap: 10px; grid-template-columns: repeat(3, minmax(0, 1fr)); padding: 14px; }
 .tricks-grid h3 { grid-column: 1 / -1; margin-bottom: 0; }
 .trick-field { font-size: .82rem; }
-.round-card .actions { order: 1; }
+.round-card .actions { order: 3; }
 .round-card .tricks-grid { order: 2; }
 .history-card { margin-top: 16px; }
 .global-actions { display: flex; justify-content: flex-end; margin-top: 12px; }
@@ -116,6 +116,7 @@ td strong { color: var(--navy); }
   .mobile-round-meta { display: grid; margin: 16px 0 0; }
   .scoreboard-card { padding: 16px; }
   .scoreboard-header { display: grid; grid-template-columns: 1fr auto; }
+  .scoreboard-header { background: #fff; position: sticky; top: 0; z-index: 10; }
   .mobile-round-meta { grid-column: 1 / -1; }
   .scoreboard-summary { display: block; }
   .collapse-button { display: inline-flex; }
