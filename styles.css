@@ -86,6 +86,8 @@ input:focus, select:focus, button:focus-visible { outline: 3px solid rgba(31, 11
 .trick-field { font-size: .82rem; }
 .round-card .actions { order: 1; }
 .round-card .tricks-grid { order: 2; }
+.history-card { margin-top: 16px; }
+.global-actions { display: flex; justify-content: flex-end; margin-top: 12px; }
 .history { margin-top: 16px; }
 .history-list { display: grid; gap: 8px; }
 .history-item { display: flex; align-items: center; justify-content: space-between; gap: 12px; border-bottom: 1px solid var(--border); padding: 10px 0; }
@@ -113,6 +115,8 @@ td strong { color: var(--navy); }
   .desktop-round-meta { display: none; }
   .mobile-round-meta { display: grid; margin: 16px 0 0; }
   .scoreboard-card { padding: 16px; }
+  .scoreboard-header { display: grid; grid-template-columns: 1fr auto; }
+  .mobile-round-meta { grid-column: 1 / -1; }
   .scoreboard-summary { display: block; }
   .collapse-button { display: inline-flex; }
   #dealerChoice { margin-top: 18px; }
