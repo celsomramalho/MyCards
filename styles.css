@@ -108,6 +108,12 @@ th { color: var(--muted); font-size: .78rem; text-transform: uppercase; }
 td strong { color: var(--navy); }
 .footer { color: var(--muted); font-size: .8rem; margin-top: 18px; text-align: center; }
 .footer .button { display: inline-block; margin-top: 10px; width: auto; }
+.rules-card { max-width: 900px; margin: 0 auto; }
+.rules-list { margin: 0; padding-left: 1.35rem; }
+.rules-list li { color: var(--navy); padding: 0 0 16px 6px; }
+.rules-list li:last-child { padding-bottom: 0; }
+.rules-list p { color: var(--muted); line-height: 1.5; margin: 5px 0 0; }
+.rules-list code { background: #f6f9fb; border: 1px solid var(--border); border-radius: 8px; color: var(--navy); display: block; margin-top: 7px; padding: 9px 11px; }
 @media (max-width: 760px) {
   .app-shell { padding-top: 16px; }
   .app-header { align-items: flex-start; margin-bottom: 16px; }
