@@ -121,6 +121,7 @@ td strong { color: var(--navy); }
   .round-points { grid-column: 2; grid-row: 1; min-height: 42px; }
   .tricks-grid { grid-template-columns: 1fr 1fr; }
   .form-row { grid-template-columns: 1fr; }
+  .form-row .number-control, .max-tricks-config > select { width: 160px; }
   .desktop-round-meta { display: none; }
   .mobile-round-meta { display: grid; margin: 0; }
   .scoreboard-card { padding: 16px; }
