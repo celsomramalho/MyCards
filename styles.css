@@ -50,6 +50,10 @@ input:focus, select:focus, button:focus-visible { outline: 3px solid rgba(31, 11
 .form-row { display: grid; grid-template-columns: 140px 1fr; gap: 12px; align-items: end; }
 .max-tricks-config { margin-top: 14px; }
 .form-row > label, .max-tricks-config > label { white-space: nowrap; }
+.field-label { color: var(--navy); display: block; font-size: .9rem; font-weight: 700; }
+.segmented-control { background: #f6f9fb; border: 1px solid var(--border); border-radius: 11px; display: inline-flex; gap: 4px; margin-top: 6px; padding: 4px; width: 160px; }
+.segmented-control button { background: transparent; border: 0; border-radius: 8px; color: var(--navy); flex: 1; font-weight: 800; min-height: 36px; min-width: 0; padding: 6px 8px; }
+.segmented-control button.active { background: var(--blue); box-shadow: 0 2px 5px rgba(31, 111, 235, .25); color: white; }
 .max-tricks-config > select { display: block; max-width: none; width: 140px; }
 .max-tricks-config .notice { margin-bottom: 10px; }
 .config-note { align-items: center; background: #f6f9fb; border: 1px solid var(--border); border-radius: 10px; color: var(--muted); display: flex; min-height: 44px; padding: 9px 11px; }
