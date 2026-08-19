@@ -1,0 +1,83 @@
+.form-row { display: grid; grid-template-columns: 140px 1fr; gap: 12px; align-items: end; }
+.max-tricks-config { margin-top: 14px; }
+.form-row > label, .max-tricks-config > label { white-space: nowrap; }
+.field-label { color: var(--navy); display: block; font-size: .9rem; font-weight: 700; }
+.segmented-control { background: #f6f9fb; border: 1px solid var(--border); border-radius: 11px; display: inline-flex; gap: 4px; margin-top: 6px; padding: 4px; width: 160px; }
+.segmented-control button { background: transparent; border: 0; border-radius: 8px; color: var(--navy); flex: 1; font-weight: 800; min-height: 36px; min-width: 0; padding: 6px 8px; }
+.segmented-control button.active { background: var(--blue); box-shadow: 0 2px 5px rgba(31, 111, 235, .25); color: white; }
+.max-tricks-config > select { display: block; max-width: none; width: 140px; }
+.max-tricks-config .notice { margin-bottom: 10px; }
+.config-note { align-items: center; background: #f6f9fb; border: 1px solid var(--border); border-radius: 10px; color: var(--muted); display: flex; min-height: 44px; padding: 9px 11px; }
+.player-name { display: flex; align-items: center; gap: 10px; margin-top: 12px; }
+.player-name input { margin-top: 0; }
+.player-number { color: var(--muted); font-weight: 800; width: 24px; }
+.meta-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; margin: 18px 0; }
+.meta { background: #f6f9fb; border-radius: 13px; padding: 12px; }
+.meta strong { display: block; color: var(--navy); font-size: 1.25rem; margin-top: 2px; }
+.meta span { color: var(--muted); font-size: .78rem; }
+.game-layout { display: grid; grid-template-columns: minmax(260px, .8fr) minmax(0, 1.5fr); gap: 16px; align-items: start; }
+.score-list { display: grid; gap: 10px; }
+.mobile-header { display: contents; }
+.scoreboard-header { align-items: center; background: white; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; gap: 12px; padding-bottom: 10px; }
+.scoreboard-header h2 { margin-bottom: 0; }
+.scoreboard-summary { color: var(--muted); display: none; font-size: .82rem; margin: 3px 0 0; }
+.collapse-button { align-items: center; background: var(--blue-soft); border: 0; border-radius: 9px; color: #1654a3; display: none; font-size: 1.35rem; font-weight: 900; height: 38px; justify-content: center; width: 42px; }
+.scoreboard-body.collapsed { display: none; }
+.mobile-round-meta { display: none; }
+.score-row { border: 1px solid var(--border); border-radius: 13px; padding: 13px; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.score-row.winner { background: var(--green-soft); border-color: #94d4b1; }
+.score-row small { color: var(--muted); display: block; margin-top: 4px; }
+.cumulative { color: var(--navy); font-size: 1.65rem; font-weight: 850; }
+.round-card { display: grid; gap: 12px; }
+.player-score-grid { display: grid; gap: 12px; }
+.round-player { border: 1px solid var(--border); border-radius: 14px; padding: 14px; }
+.round-player-head { display: flex; justify-content: space-between; gap: 8px; align-items: center; }
+.dealer-note { color: var(--muted); font-size: .78rem; font-weight: 650; }
+.round-fields { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; margin-top: 12px; }
+.round-fields label { font-size: .82rem; }
+.round-fields input, .round-fields select { min-height: 42px; }
+.round-points { background: var(--blue-soft); border-radius: 10px; color: #1654a3; display: flex; flex-direction: column; justify-content: center; min-height: 42px; padding: 6px 10px; }
+.round-points span { font-size: .72rem; }
+.round-points strong { font-size: 1.1rem; }
+.readonly-number { align-items: center; background: #f6f9fb; border: 1px solid var(--border); border-radius: 10px; display: flex; justify-content: center; margin-top: 6px; min-height: 44px; padding: 9px 11px; }
+.tricks-grid { border: 1px solid var(--border); border-radius: 14px; display: grid; gap: 10px; grid-template-columns: repeat(3, minmax(0, 1fr)); padding: 14px; }
+.tricks-grid h3 { grid-column: 1 / -1; margin-bottom: 0; }
+.trick-field { font-size: .82rem; }
+.round-card .actions { order: 3; }
+.round-card .tricks-grid { order: 2; }
+.history-card { margin-top: 16px; }
+.global-actions { display: flex; justify-content: flex-end; margin-top: 12px; }
+.history { margin-top: 16px; }
+.history-list { display: grid; gap: 8px; }
+.history-item { display: flex; align-items: center; justify-content: space-between; gap: 12px; border-bottom: 1px solid var(--border); padding: 10px 0; }
+.history-item:last-child { border-bottom: 0; }
+.pill { border-radius: 99px; padding: 4px 9px; font-size: .75rem; font-weight: 800; background: var(--blue-soft); color: #1654a3; }
+@media (max-width: 760px) {
+  .mobile-header { background: #eef4f8; display: block; padding-bottom: 16px; position: sticky; top: 0; z-index: 20; }
+  .game-layout { grid-template-columns: 1fr; }
+  .meta-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .round-fields { grid-template-columns: 1fr 1fr; }
+  .round-fields > label:nth-child(1) { grid-column: 1; grid-row: 1; }
+  .round-fields > label:nth-child(2) { grid-column: 1; grid-row: 2; }
+  .round-fields > label:nth-child(3) { grid-column: 2; grid-row: 2; }
+  .round-points { grid-column: 2; grid-row: 1; min-height: 42px; }
+  .tricks-grid { grid-template-columns: 1fr 1fr; }
+  .form-row { grid-template-columns: 1fr; }
+  .form-row .number-control, .max-tricks-config > select { width: 160px; }
+  .desktop-round-meta { display: none; }
+  .mobile-round-meta { display: grid; margin: 0; }
+  .scoreboard-card { padding: 16px; }
+  .scoreboard-header { display: grid; grid-template-columns: 1fr auto; }
+  .mobile-round-meta { grid-column: 1 / -1; }
+  .scoreboard-summary { display: block; }
+  .collapse-button { display: inline-flex; }
+  #dealerChoice { margin-top: 18px; }
+  .player-name:last-child { margin-bottom: 2px; }
+}
+@media (max-width: 420px) {
+  .round-fields { grid-template-columns: 1fr 1fr; }
+  .round-fields > label:nth-child(1) { grid-column: 1; grid-row: 1; }
+  .round-fields > label:nth-child(2) { grid-column: 1; grid-row: 2; }
+  .round-fields > label:nth-child(3) { grid-column: 2; grid-row: 2; }
+  .tricks-grid { grid-template-columns: 1fr 1fr; }
+}

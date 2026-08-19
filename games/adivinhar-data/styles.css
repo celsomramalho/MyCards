@@ -1,0 +1,8 @@
+.cards-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 14px; margin: 18px 0; }
+.date-card { background: white; border: 2px solid var(--border); border-radius: 14px; padding: 10px; text-align: left; transition: border-color .15s, background .15s; }
+.date-card.selected { border-color: var(--blue); background: var(--blue-soft); }
+.card-label { color: var(--muted); font-size: .8rem; font-weight: 800; margin: 0 0 8px; text-align: center; }
+.card-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; }
+.cell { background: #f6f9fb; border-radius: 6px; padding: 8px 0; text-align: center; font-weight: 700; color: var(--navy); font-size: .95rem; }
+.date-card.selected .cell { background: white; }
+.result-date { color: var(--navy); font-size: 2.2rem; font-weight: 850; margin: 10px 0 4px; text-align: center; }
