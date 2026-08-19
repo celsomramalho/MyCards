@@ -4,24 +4,29 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="theme-color" content="#102a43" />
-    <meta name="description" content="Placar simples para o jogo de cartas Sobe Desce." />
+    <meta name="description" content="Jogos de cartas para jogar offline." />
     <link rel="manifest" href="manifest.json" />
     <link rel="icon" href="icon.svg" type="image/svg+xml" />
     <link rel="stylesheet" href="styles.css" />
-    <title>Sobe Desce — Placar</title>
+    <title>Cartas — Jogos</title>
   </head>
   <body>
     <main class="app-shell">
       <header class="app-header">
         <div>
-          <p class="eyebrow">Placar de cartas</p>
-          <h1>Sobe Desce</h1>
+          <p class="eyebrow">Jogos de cartas</p>
+          <h1>Cartas</h1>
         </div>
       </header>
 
       <div id="app" aria-live="polite"></div>
-      <footer class="footer">Partida atual salva neste dispositivo.<br /><button id="rulesButton" class="button secondary" type="button">Regras do jogo</button><br /><button id="globalResetButton" class="button danger hidden" type="button">Reiniciar partida</button><br /><button id="installButton" class="button secondary hidden" type="button">Instalar app</button></footer>
+      <footer class="footer">
+        <button id="hubButton" class="button ghost hidden" type="button">← Voltar para os jogos</button>
+        <button id="rulesButton" class="button secondary hidden" type="button">Regras do jogo</button>
+        <button id="globalResetButton" class="button danger hidden" type="button">Reiniciar partida</button>
+        <button id="installButton" class="button secondary hidden" type="button">Instalar app</button>
+      </footer>
     </main>
-    <script src="app.js" defer></script>
+    <script type="module" src="core/main.js"></script>
   </body>
 </html>

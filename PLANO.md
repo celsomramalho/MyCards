@@ -74,27 +74,27 @@ export default {
 
 ## Fase 1 — Reestruturação de pastas e shell
 
-- [ ] 1.1 Criar a estrutura de pastas:
+- [x] 1.1 Criar a estrutura de pastas:
   - `core/` — utilidades compartilhadas (storage namespaced, `uid()`, `escapeHtml()`,
     prompt de instalação, roteador, render da hub)
   - `games/sobe-desce/` — jogo atual movido para cá
   - `games/adivinhar-data/` — segundo jogo (novo)
   - `registry.js` — lista de jogos disponíveis `{ id, nome, icone, descricao, modulo }`
-- [ ] 1.2 Extrair utilidades compartilhadas para `core/storage.js`:
+- [x] 1.2 Extrair utilidades compartilhadas para `core/storage.js`:
   - `loadState(jogoId)`, `saveState(jogoId, state)`, `clearState(jogoId)`
   - padrão de chave: `games:<id>:state` (evita colisão entre jogos)
   - mover `escapeHtml()` e `uid()` para `core/utils.js`
-- [ ] 1.3 Criar `core/router.js` — roteador simples por hash:
+- [x] 1.3 Criar `core/router.js` — roteador simples por hash:
   - `#/` → hub (lista de jogos)
   - `#/jogo/sobe-desce` → carrega e monta o jogo
   - `#/jogo/adivinhar-data` → carrega e monta o jogo
   - chama `unmount()` do jogo atual antes de montar o próximo
   - carrega cada jogo sob demanda com `import()` dinâmico
-- [ ] 1.4 Criar `core/hub.js` — tela da hub:
+- [x] 1.4 Criar `core/hub.js` — tela da hub:
   - lista os jogos a partir de `registry.js`
   - cada jogo vira um card clicável que navega para `#/jogo/<id>`
   - mostra "continuar" se houver estado salvo do jogo (opcional)
-- [ ] 1.5 Ajustar `index.html`:
+- [x] 1.5 Ajustar `index.html`:
   - título e `<h1>` deixam de ser "Sobe Desce" e viram o nome do hub (ex.: "Cartas")
   - carregar `core/router.js` como `<script type="module">`
   - footer/contextual: botões "Reiniciar partida" e "Instalar" só aparecem dentro de um jogo

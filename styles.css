@@ -112,6 +112,13 @@ th { color: var(--muted); font-size: .78rem; text-transform: uppercase; }
 td strong { color: var(--navy); }
 .footer { color: var(--muted); font-size: .8rem; margin-top: 18px; text-align: center; }
 .footer .button { display: inline-block; margin-top: 10px; width: auto; }
+.game-list { display: grid; gap: 12px; margin-top: 18px; }
+.game-card { align-items: center; background: #f6f9fb; border: 1px solid var(--border); border-radius: 14px; display: flex; gap: 14px; padding: 16px; text-align: left; width: 100%; transition: transform .15s, border-color .15s; }
+.game-card:hover { border-color: var(--blue); transform: translateY(-1px); }
+.game-icon { font-size: 1.8rem; }
+.game-info { display: flex; flex-direction: column; gap: 2px; flex: 1; }
+.game-info strong { color: var(--navy); font-size: 1.05rem; }
+.game-info .muted { font-size: .82rem; }
 .rules-card { max-width: 900px; margin: 0 auto; }
 .rules-list { margin: 0; padding-left: 1.35rem; }
 .rules-list li { color: var(--navy); padding: 0 0 16px 6px; }
