@@ -1,3 +1,5 @@
+.su-header-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; margin: 0 0 4px; }
+.su-header-row .eyebrow { margin: 0; }
 .su-turno { background: var(--blue-soft); color: #1654a3; border-radius: 12px; padding: 10px 14px; font-weight: 800; display: inline-block; margin: 4px 0 10px; }
 .su-setup-field { margin-top: 14px; }
 .su-tabuleiro { display: grid; gap: 16px; margin: 12px 0 8px; }

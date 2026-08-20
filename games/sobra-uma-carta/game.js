@@ -10,7 +10,6 @@ Cartas.games = Cartas.games || {};
   let storage;
   let globalResetButton;
   let rulesButton;
-  let headerExtra;
   let styleLink;
   let state = null;
 
@@ -22,7 +21,6 @@ Cartas.games = Cartas.games || {};
       storage = ctx.storage;
       globalResetButton = ctx.globalResetButton;
       rulesButton = ctx.rulesButton;
-      headerExtra = ctx.headerExtra;
       if (!styleLink) {
         styleLink = document.createElement("link");
         styleLink.rel = "stylesheet";
@@ -37,7 +35,6 @@ Cartas.games = Cartas.games || {};
     },
     unmount() {
       if (app) app.innerHTML = "";
-      if (headerExtra) { headerExtra.innerHTML = ""; headerExtra.classList.add("hidden"); }
       styleLink?.remove();
       styleLink = null;
     },
@@ -85,6 +82,15 @@ Cartas.games = Cartas.games || {};
   }
 
   function nomeJogador(numero) { return (numero === 1 ? state.jogador1 : state.jogador2) || `Jogador ${numero}`; }
+
+  function placarBadgeHtml() {
+    if (!state.placar) return "";
+    return `<span class="placar-badge">${escapeHtml(state.jogador1)} ${state.placar.vitorias1} × ${state.placar.vitorias2} ${escapeHtml(state.jogador2)}</span>`;
+  }
+
+  function cabecalhoJogoHtml() {
+    return `<div class="su-header-row"><p class="eyebrow">Sobra uma carta</p>${placarBadgeHtml()}</div>`;
+  }
 
   function selecionarCarta(linhaIndex, cartaIndex) {
     if (state.selecaoLinha !== null && state.selecaoLinha !== linhaIndex) {
@@ -157,7 +163,7 @@ Cartas.games = Cartas.games || {};
     const restantes = totalRestante();
     const podeRemover = state.selecaoLinha !== null && state.selecaoCartas.length > 0;
     app.innerHTML = `<section class="card">
-      <p class="eyebrow">Sobra uma carta</p>
+      ${cabecalhoJogoHtml()}
       <div class="su-turno">Vez de: <strong>${escapeHtml(nomeJogador(state.turno))}</strong></div>
       <p class="hint">Escolha de 1 até todas as cartas de uma única linha e clique em Remover. Quem deixar apenas 1 carta no tabuleiro vence a partida.</p>
       <div class="su-tabuleiro">${[0, 1, 2].map(renderLinha).join("")}</div>
@@ -174,7 +180,7 @@ Cartas.games = Cartas.games || {};
     const perdedor = nomeJogador(state.perdedor);
     const vencedor = nomeJogador(state.perdedor === 1 ? 2 : 1);
     app.innerHTML = `<section class="card narrow">
-      <p class="eyebrow">Sobra uma carta</p>
+      ${cabecalhoJogoHtml()}
       <h2>Fim de partida</h2>
       <p class="notice error"><strong>${escapeHtml(perdedor)}</strong> ficou com a última carta e perdeu!</p>
       <p class="notice success">🏆 <strong>${escapeHtml(vencedor)}</strong> venceu!</p>
@@ -197,20 +203,8 @@ Cartas.games = Cartas.games || {};
 
   function updateGlobalResetButton() { globalResetButton?.classList.toggle("hidden", !(state && state.status !== "setup")); }
 
-  function updateHeaderPlacar() {
-    if (!headerExtra) return;
-    if (!state.placar || state.status === "setup") {
-      headerExtra.innerHTML = "";
-      headerExtra.classList.add("hidden");
-      return;
-    }
-    headerExtra.innerHTML = `<span class="placar-badge">${escapeHtml(state.jogador1)} ${state.placar.vitorias1} × ${state.placar.vitorias2} ${escapeHtml(state.jogador2)}</span>`;
-    headerExtra.classList.remove("hidden");
-  }
-
   function render() {
     updateGlobalResetButton();
-    updateHeaderPlacar();
     if (state.status === "setup") return showSetup();
     if (state.status === "fim") return renderFim();
     renderJogo();
