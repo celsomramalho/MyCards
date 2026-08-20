@@ -1,6 +1,9 @@
-import { escapeHtml } from "../../core/utils.js";
+window.Cartas = window.Cartas || {};
+Cartas.games = Cartas.games || {};
+(function () {
+  var escapeHtml = Cartas.escapeHtml;
 
-const CARTAS = [
+  const CARTAS = [
   { chave: 16, numeros: [16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31] },
   { chave: 2, numeros: [2, 22, 18, 23, 14, 7, 6, 19, 31, 10, 3, 30, 11, 27, 15, 26] },
   { chave: 8, numeros: [8, 31, 15, 28, 25, 10, 30, 29, 26, 14, 12, 24, 13, 9, 27, 11] },
@@ -17,7 +20,7 @@ let dia = null;
 let mes = null;
 let marcadas = [false, false, false, false, false];
 
-export default {
+Cartas.games["adivinhar-data"] = {
   id: "adivinhar-data",
   nome: "Adivinhar data",
   mount(container, ctx) {
@@ -90,3 +93,4 @@ function render() {
   if (fase === "mes") return renderCartas("mes", "Descubra o mês", "Agora peça para pensar no mês (1 a 12) e marque as cartas que contêm esse mês.", "Descobrir o mês");
   if (fase === "revelacao") return renderRevelacao();
 }
+})();

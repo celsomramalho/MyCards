@@ -1,4 +1,5 @@
-export function escapeHtml(value) {
-  return String(value).replace(/[&<>'"]/g, char => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", "'": "&#39;", '"': "&quot;" }[char]));
-}
-export function uid() { return `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`; }
+window.Cartas = window.Cartas || {};
+Cartas.escapeHtml = function (value) {
+  return String(value).replace(/[&<>'"]/g, function (char) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", "'": "&#39;", '"': "&quot;" }[char]; });
+};
+Cartas.uid = function () { return Date.now() + "-" + Math.random().toString(36).slice(2, 8); };

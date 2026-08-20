@@ -1,6 +1,10 @@
-import { escapeHtml, uid } from "../../core/utils.js";
+window.Cartas = window.Cartas || {};
+Cartas.games = Cartas.games || {};
+(function () {
+  var escapeHtml = Cartas.escapeHtml;
+  var uid = Cartas.uid;
 
-const NAMES_KEY = "games:sobe-desce:nomes";
+  const NAMES_KEY = "games:sobe-desce:nomes";
 let CARDS = [1, 2, 3, 4, 5, 6, 6, 5, 4, 3, 2, 1];
 let TOTAL_ROUNDS = CARDS.length;
 let app;
@@ -11,7 +15,7 @@ let state = null;
 let savedPlayerNames = [];
 let scoreboardCollapsed = false;
 
-export default {
+Cartas.games["sobe-desce"] = {
   id: "sobe-desce",
   nome: "Sobe Desce",
   mount(container, ctx) {
@@ -111,3 +115,4 @@ function renderGame() {
 function renderFinished() { const max = Math.max(...state.players.map(player => player.pontuacaoCumulativa)); const leaders = state.players.filter(player => player.pontuacaoCumulativa === max); app.innerHTML = `<section class="card"><p class="eyebrow">Partida encerrada</p><h2>Fim de jogo</h2><p class="notice success">${leaders.length > 1 ? `Empate final entre ${leaders.map(player => escapeHtml(player.nome)).join(", ")}.` : `${escapeHtml(leaders[0].nome)} terminou na liderança.`}</p><div class="table-wrap"><table><thead><tr><th>Jogador</th><th>Pontuação final</th></tr></thead><tbody>${[...state.players].sort((a, b) => b.pontuacaoCumulativa - a.pontuacaoCumulativa).map(player => `<tr><td><strong>${escapeHtml(player.nome)}</strong></td><td>${player.pontuacaoCumulativa}</td></tr>`).join("")}</tbody></table></div><div class="history"><h3>Resumo das rodadas</h3><div class="history-list">${state.historicoRodadas.map(item => `<div class="history-item"><span>Rodada ${item.numero} · ${item.quantidadeCartas} vaza${item.quantidadeCartas === 1 ? "" : "s"}</span><button class="button ghost" data-edit="${item.numero}" type="button">Editar</button></div>`).join("")}</div></div><div class="actions"><button class="button" data-action="new" type="button">Novo jogo</button><button class="button danger" data-action="reset" type="button">Apagar partida</button></div></section>`; app.querySelector('[data-action="new"]').addEventListener("click", newGame); app.querySelector('[data-action="reset"]').addEventListener("click", resetGame); app.querySelectorAll("[data-edit]").forEach(button => button.addEventListener("click", () => { state.status = "em_andamento"; state.editingRound = Number(button.dataset.edit); state.draft = draftForRound(state.editingRound); persist(); render(); })); }
 function updateGlobalResetButton() { globalResetButton?.classList.toggle("hidden", !(state && state.status !== "setup")); }
 function render() { updateGlobalResetButton(); if (!state) return showHome(); if (state.status === "setup") return showSetup(); if (state.status === "finalizada") return renderFinished(); renderGame(); }
+})();

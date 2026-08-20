@@ -1,51 +1,48 @@
-import registry from "../registry.js";
-import { renderHub } from "./hub.js";
-import { createStorage } from "./storage.js";
-import { escapeHtml, uid } from "./utils.js";
+window.Cartas = window.Cartas || {};
+Cartas.startRouter = function () {
+  var app = document.querySelector("#app");
+  var hubButton = document.querySelector("#hubButton");
+  var rulesButton = document.querySelector("#rulesButton");
+  var globalResetButton = document.querySelector("#globalResetButton");
+  var currentGame = null;
 
-const app = document.querySelector("#app");
-const hubButton = document.querySelector("#hubButton");
-const rulesButton = document.querySelector("#rulesButton");
-const globalResetButton = document.querySelector("#globalResetButton");
+  function navigate(hash) { location.hash = hash; }
 
-let currentGame = null;
-
-function navigate(hash) { location.hash = hash; }
-
-async function unmountCurrent() {
-  if (currentGame?.unmount) currentGame.unmount();
-  currentGame = null;
-  rulesButton.classList.add("hidden");
-  globalResetButton.classList.add("hidden");
-}
-
-async function route() {
-  const hash = location.hash || "#/";
-  const match = hash.match(/^#\/jogo\/(.+)$/);
-  if (!match) {
-    await unmountCurrent();
-    hubButton.classList.add("hidden");
-    renderHub(app, registry, navigate);
-    return;
+  function unmountCurrent() {
+    if (currentGame && currentGame.unmount) currentGame.unmount();
+    currentGame = null;
+    rulesButton.classList.add("hidden");
+    globalResetButton.classList.add("hidden");
   }
-  const jogoId = decodeURIComponent(match[1]);
-  const entry = registry.find(game => game.id === jogoId);
-  if (!entry) { location.hash = "#/"; return; }
-  await unmountCurrent();
-  hubButton.classList.remove("hidden");
-  const module = await import(entry.modulo);
-  currentGame = module.default;
-  currentGame.mount(app, {
-    storage: createStorage(jogoId),
-    escapeHtml,
-    uid,
-    voltar: () => navigate("#/"),
-    rulesButton,
-    globalResetButton,
-  });
-}
 
-hubButton.addEventListener("click", () => navigate("#/"));
-window.addEventListener("hashchange", route);
+  function route() {
+    var hash = location.hash || "#/";
+    var match = hash.match(/^#\/jogo\/(.+)$/);
+    if (!match) {
+      unmountCurrent();
+      hubButton.classList.add("hidden");
+      Cartas.renderHub(app, Cartas.registry, navigate);
+      return;
+    }
+    var jogoId = decodeURIComponent(match[1]);
+    var entry = Cartas.registry.find(function (g) { return g.id === jogoId; });
+    if (!entry) { location.hash = "#/"; return; }
+    unmountCurrent();
+    hubButton.classList.remove("hidden");
+    var game = Cartas.games[jogoId];
+    if (!game) { location.hash = "#/"; return; }
+    currentGame = game;
+    game.mount(app, {
+      storage: Cartas.storage.createStorage(jogoId),
+      escapeHtml: Cartas.escapeHtml,
+      uid: Cartas.uid,
+      voltar: function () { navigate("#/"); },
+      rulesButton: rulesButton,
+      globalResetButton: globalResetButton
+    });
+  }
 
-export function startRouter() { route(); }
+  hubButton.addEventListener("click", function () { navigate("#/"); });
+  window.addEventListener("hashchange", route);
+  route();
+};
