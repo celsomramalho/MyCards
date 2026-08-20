@@ -77,7 +77,12 @@ function renderCarta(carta, index) {
 function renderCartas(rodada, titulo, instrucao, botao, mostrarVoltar, faseVoltar, marcadasVoltar) {
   const marcadasCount = marcadas.filter(Boolean).length;
   const botaoVoltar = mostrarVoltar ? `<button class="button ghost" data-action="voltar" type="button">Voltar</button>` : "";
-  app.innerHTML = `<section class="card"><p class="eyebrow">Adivinhar data</p><h2>${titulo}</h2><p class="muted">${instrucao}</p><p class="hint">Toque nas cartas que contêm o número para marcá-las.${marcadasCount ? ` ${marcadasCount} carta${marcadasCount === 1 ? "" : "s"} marcada${marcadasCount === 1 ? "" : "s"}.` : ""}</p><div class="ad-cards">${ordem.map(i => renderCarta(CARTAS[i], i)).join("")}</div><div class="actions">${botaoVoltar}<button class="button" data-action="descobrir" type="button" ${marcadasCount ? "" : "disabled"}>${botao}</button></div></section>`;
+  // Na rodada do mês (1 a 12), a Carta 1 (chave 16) nunca é necessária: nenhum
+  // dos seus números é <= 12. Exibi-la só confunde e permite marcações
+  // impossíveis (mês > 12), que resultam em "?" na revelação. Por isso ela
+  // é ocultada nessa rodada.
+  const ordemVisivel = rodada === "mes" ? ordem.filter(i => CARTAS[i].numeros.some(n => n <= 12)) : ordem;
+  app.innerHTML = `<section class="card"><p class="eyebrow">Adivinhar data</p><h2>${titulo}</h2><p class="muted">${instrucao}</p><p class="hint">Toque nas cartas que contêm o número para marcá-las.${marcadasCount ? ` ${marcadasCount} carta${marcadasCount === 1 ? "" : "s"} marcada${marcadasCount === 1 ? "" : "s"}.` : ""}</p><div class="ad-cards">${ordemVisivel.map(i => renderCarta(CARTAS[i], i)).join("")}</div><div class="actions">${botaoVoltar}<button class="button" data-action="descobrir" type="button" ${marcadasCount ? "" : "disabled"}>${botao}</button></div></section>`;
   app.querySelectorAll("[data-carta]").forEach(card => card.addEventListener("click", () => { const i = Number(card.dataset.carta); marcadas[i] = !marcadas[i]; render(); }));
   if (mostrarVoltar) {
     app.querySelector('[data-action="voltar"]').addEventListener("click", () => {
@@ -105,14 +110,14 @@ function renderRevelacao() {
 }
 
 function mostrarRegras() {
-  app.innerHTML = `<section class="card rules-card"><p class="eyebrow">Regras do jogo</p><h2>Adivinhar data</h2><ol class="rules-list"><li><strong>Objetivo</strong><p>Descobrir o dia, o mês e o ano de uma data que alguém pensou, usando 5 cartas com 16 números cada.</p></li><li><strong>Primeiro número de cada carta</strong><p>Cada carta tem um número-chave (o primeiro número): 16, 2, 8, 1 e 4. Somar os números-chave das cartas marcadas revela o valor pensado.</p></li><li><strong>Rodada do dia</strong><p>Peça para a pessoa pensar num dia de 1 a 31. Mostre as 5 cartas e peça que marque todas as que contêm o dia. Some os números-chave das cartas marcadas — o resultado é o dia.</p></li><li><strong>Rodada do mês</strong><p>Peça para a pessoa pensar no mês (1 a 12). Mostre as 5 cartas novamente e peça que marque todas as que contêm o mês. Some os números-chave das cartas marcadas — o resultado é o mês.</p></li><li><strong>Rodada do ano</strong><p>Peça para a pessoa pensar num ano entre 2001 e 2031, usando apenas os 2 últimos dígitos (1 a 31). Mostre as 5 cartas novamente e peça que marque todas as que contêm esse número. Some os números-chave das cartas marcadas e some 2000 — o resultado é o ano.</p></li><li><strong>Revelação</strong><p>Mostre o dia, o mês e o ano descobertos.</p></li></ol><div class="actions"><button class="button" data-action="voltar-regras" type="button">Voltar</button></div></section>`;
+  app.innerHTML = `<section class="card rules-card"><p class="eyebrow">Regras do jogo</p><h2>Adivinhar data</h2><ol class="rules-list"><li><strong>Objetivo</strong><p>Descobrir o dia, o mês e o ano de uma data que alguém pensou, usando 5 cartas com 16 números cada. Então peça para a pessoa pensar em uma data qualquer entre o ano 2001 até 2031.</p></li><li><strong>Rodada do dia</strong><p>Peça para a pessoa pensar num dia de 1 a 31. Mostre as 5 cartas e peça que marque todas as que contêm o dia. Uma vez marcada todas as cartas clicar no botão Avançar.</p></li><li><strong>Rodada do mês</strong><p>Peça para a pessoa pensar no mês (1 a 12). Mostre as 5 cartas novamente e peça que marque todas as que contêm o mês. Uma vez marcada todas as cartas clicar no botão Avançar.</p></li><li><strong>Rodada do ano</strong><p>Peça para a pessoa pensar num ano entre 2001 e 2031, usando apenas os 2 últimos dígitos (1 a 31). Mostre as 5 cartas novamente e peça que marque todas as que contêm esse número. Uma vez marcada todas as cartas clicar no botão Mostrar a data.</p></li><li><strong>Revelação</strong><p>Mostre o dia, o mês e o ano descobertos.</p><p class="hint">Obs: Se a data pensada não for essa, volte e reveja suas cartas marcadas.</p></li></ol><div class="actions"><button class="button" data-action="voltar-regras" type="button">Voltar</button></div></section>`;
   app.querySelector('[data-action="voltar-regras"]').addEventListener("click", render);
 }
 
 function render() {
-  if (fase === "dia") return renderCartas("dia", "Etapa: Dia", "Pense em uma data entre 2001 e 2031.<br>Agora marque todas as cartas quem contêm o dia.", "Avançar");
-  if (fase === "mes") return renderCartas("mes", "Etapa: Mês", "Agora marque todas as cartas quem contêm o mês", "Avançar", true, "dia", marcadasDia);
-  if (fase === "ano") return renderCartas("ano", "Etapa: Ano", "Agora marque todas as cartas quem contêm o ano, lembrando que o intervalo é do ano 1 ao ano 31", "Mostrar a data", true, "mes", marcadasMes);
+  if (fase === "dia") return renderCartas("dia", "Etapa: Dia", "Pense em uma data entre 2001 e 2031.<br>Agora marque todas as cartas que contêm o dia.", "Avançar");
+  if (fase === "mes") return renderCartas("mes", "Etapa: Mês", "Agora marque todas as cartas que contêm o mês", "Avançar", true, "dia", marcadasDia);
+  if (fase === "ano") return renderCartas("ano", "Etapa: Ano", "Agora marque todas as cartas que contêm o ano, lembrando que o intervalo é do ano 1 ao ano 31", "Mostrar a data", true, "mes", marcadasMes);
   if (fase === "revelacao") return renderRevelacao();
 }
 })();
