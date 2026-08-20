@@ -4,38 +4,36 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="theme-color" content="#102a43" />
-    <meta name="description" content="MyCards — coleção de jogos e placares de cartas." />
-    <link rel="manifest" href="./manifest.json" />
-    <link rel="icon" href="./icon.svg" type="image/svg+xml" />
-    <link rel="stylesheet" href="./core/base.css" />
-    <link rel="stylesheet" href="./core/hub.css" />
-    <title>MyCards</title>
+    <meta name="description" content="Jogos de cartas para jogar offline." />
+    <link rel="manifest" href="manifest.json" />
+    <link rel="icon" href="icon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="styles.css" />
+    <title>Cartas — Jogos</title>
   </head>
   <body>
     <main class="app-shell">
       <header class="app-header">
         <div>
-          <p class="eyebrow">Coleção de jogos</p>
-          <h1>MyCards</h1>
+          <p class="eyebrow">Jogos de cartas</p>
+          <h1>Cartas</h1>
         </div>
+        <button id="hubButton" class="button ghost home-button hidden" type="button">🏠 Home</button>
       </header>
 
-      <section class="card narrow">
-        <p class="muted">Escolha um jogo para começar.</p>
-        <div class="game-list">
-          <a class="game-tile" href="./games/sobe-desce/index.html">
-            <strong>Sobe Desce</strong>
-            <span>Placar completo com palpites e vazas.</span>
-          </a>
-          <a class="game-tile" href="./games/adivinhar-data/index.html">
-            <strong>Adivinhar Data</strong>
-            <span>Truque de mágica com 5 cartas numeradas.</span>
-          </a>
-        </div>
-      </section>
-
-      <footer class="footer"><button id="installButton" class="button secondary hidden" type="button">Instalar app</button></footer>
+      <div id="app" aria-live="polite"></div>
+      <footer class="footer">
+        <button id="rulesButton" class="button secondary hidden" type="button">Regras do jogo</button>
+        <button id="globalResetButton" class="button danger hidden" type="button">Reiniciar partida</button>
+        <button id="installButton" class="button secondary hidden" type="button">Instalar app</button>
+      </footer>
     </main>
-    <script src="./core/shell.js" defer></script>
+    <script src="core/utils.js" defer></script>
+    <script src="core/storage.js" defer></script>
+    <script src="registry.js" defer></script>
+    <script src="games/sobe-desce/game.js" defer></script>
+    <script src="games/adivinhar-data/game.js" defer></script>
+    <script src="core/hub.js" defer></script>
+    <script src="core/router.js" defer></script>
+    <script src="core/main.js" defer></script>
   </body>
 </html>

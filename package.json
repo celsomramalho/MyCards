@@ -1,8 +1,8 @@
 {
-  "name": "mycards",
-  "version": "2.0.0",
+  "name": "sobe-desce-placar",
+  "version": "1.0.0",
   "private": true,
-  "description": "PWA com uma coleção de jogos e placares de cartas.",
+  "description": "PWA de placar para o jogo de cartas Sobe Desce.",
   "scripts": {
     "dev": "python -m http.server 4174 --bind 127.0.0.1",
     "start": "python -m http.server 4174 --bind 127.0.0.1"
