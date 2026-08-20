@@ -22,6 +22,7 @@ let ano = null;
 let marcadas = [false, false, false, false, false];
 let marcadasDia = [false, false, false, false, false];
 let marcadasMes = [false, false, false, false, false];
+let marcadasAno = [false, false, false, false, false];
 let ordem = [0, 1, 2, 3, 4];
 
 function embaralharOrdem() {
@@ -46,7 +47,7 @@ Cartas.games["adivinhar-data"] = {
       styleLink.dataset.gameStyles = "adivinhar-data";
       document.head.appendChild(styleLink);
     }
-    fase = "dia"; dia = null; mes = null; ano = null; marcadas = [false, false, false, false, false]; marcadasDia = [false, false, false, false, false]; marcadasMes = [false, false, false, false, false];
+    fase = "dia"; dia = null; mes = null; ano = null; marcadas = [false, false, false, false, false]; marcadasDia = [false, false, false, false, false]; marcadasMes = [false, false, false, false, false]; marcadasAno = [false, false, false, false, false];
     embaralharOrdem();
     render();
   },
@@ -79,13 +80,19 @@ function renderCartas(rodada, titulo, instrucao, botao, mostrarVoltar, faseVolta
   app.innerHTML = `<section class="card"><p class="eyebrow">Adivinhar data</p><h2>${titulo}</h2><p class="muted">${instrucao}</p><p class="hint">Toque nas cartas que contêm o número para marcá-las.${marcadasCount ? ` ${marcadasCount} carta${marcadasCount === 1 ? "" : "s"} marcada${marcadasCount === 1 ? "" : "s"}.` : ""}</p><div class="ad-cards">${ordem.map(i => renderCarta(CARTAS[i], i)).join("")}</div><div class="actions">${botaoVoltar}<button class="button" data-action="descobrir" type="button" ${marcadasCount ? "" : "disabled"}>${botao}</button></div></section>`;
   app.querySelectorAll("[data-carta]").forEach(card => card.addEventListener("click", () => { const i = Number(card.dataset.carta); marcadas[i] = !marcadas[i]; render(); }));
   if (mostrarVoltar) {
-    app.querySelector('[data-action="voltar"]').addEventListener("click", () => { fase = faseVoltar; marcadas = marcadasVoltar.slice(); render(); });
+    app.querySelector('[data-action="voltar"]').addEventListener("click", () => {
+      if (rodada === "mes") marcadasMes = marcadas.slice();
+      else if (rodada === "ano") marcadasAno = marcadas.slice();
+      fase = faseVoltar;
+      marcadas = marcadasVoltar.slice();
+      render();
+    });
   }
   app.querySelector('[data-action="descobrir"]').addEventListener("click", () => {
     const resultado = somaChaves();
-    if (rodada === "dia") { dia = resultado; marcadasDia = marcadas.slice(); fase = "mes"; marcadas = [false, false, false, false, false]; embaralharOrdem(); render(); }
-    else if (rodada === "mes") { mes = resultado; marcadasMes = marcadas.slice(); fase = "ano"; marcadas = [false, false, false, false, false]; embaralharOrdem(); render(); }
-    else { ano = resultado; fase = "revelacao"; render(); }
+    if (rodada === "dia") { dia = resultado; marcadasDia = marcadas.slice(); fase = "mes"; marcadas = marcadasMes.slice(); embaralharOrdem(); render(); }
+    else if (rodada === "mes") { mes = resultado; marcadasMes = marcadas.slice(); fase = "ano"; marcadas = marcadasAno.slice(); embaralharOrdem(); render(); }
+    else { ano = resultado; marcadasAno = marcadas.slice(); fase = "revelacao"; render(); }
   });
 }
 
@@ -93,7 +100,7 @@ function renderRevelacao() {
   const nomeMes = MESES[mes - 1] || "?";
   const anoCompleto = 2000 + ano;
   app.innerHTML = `<section class="card narrow"><p class="eyebrow">Adivinhar data</p><h2>Data descoberta!</h2><p class="notice success">A data pensada foi <strong>${dia} de ${escapeHtml(nomeMes)} de ${anoCompleto}</strong>.</p><p class="hint">Se a data pensada não for essa, volte e reveja suas cartas marcadas.</p><div class="actions"><button class="button" data-action="de-novo" type="button">Jogar de novo</button><button class="button ghost" data-action="voltar" type="button">Voltar</button></div></section>`;
-  app.querySelector('[data-action="de-novo"]').addEventListener("click", () => { fase = "dia"; dia = null; mes = null; ano = null; marcadas = [false, false, false, false, false]; marcadasDia = [false, false, false, false, false]; marcadasMes = [false, false, false, false, false]; embaralharOrdem(); render(); });
+  app.querySelector('[data-action="de-novo"]').addEventListener("click", () => { fase = "dia"; dia = null; mes = null; ano = null; marcadas = [false, false, false, false, false]; marcadasDia = [false, false, false, false, false]; marcadasMes = [false, false, false, false, false]; marcadasAno = [false, false, false, false, false]; embaralharOrdem(); render(); });
   app.querySelector('[data-action="voltar"]').addEventListener("click", () => { fase = "ano"; render(); });
 }
 
@@ -103,9 +110,9 @@ function mostrarRegras() {
 }
 
 function render() {
-  if (fase === "dia") return renderCartas("dia", "Descubra o dia", "Pense em uma data entre 2001 e 2031.<br>Agora marque todas as cartas quem contêm o dia.", "Avançar");
-  if (fase === "mes") return renderCartas("mes", "Descubra o mês", "Agora marque todas as cartas quem contêm o mês", "Avançar", true, "dia", marcadasDia);
-  if (fase === "ano") return renderCartas("ano", "Descubra o ano", "Agora marque todas as cartas quem contêm o ano, lembrando que o intervalo é do ano 1 ao ano 31", "Mostrar a data", true, "mes", marcadasMes);
+  if (fase === "dia") return renderCartas("dia", "Etapa: Dia", "Pense em uma data entre 2001 e 2031.<br>Agora marque todas as cartas quem contêm o dia.", "Avançar");
+  if (fase === "mes") return renderCartas("mes", "Etapa: Mês", "Agora marque todas as cartas quem contêm o mês", "Avançar", true, "dia", marcadasDia);
+  if (fase === "ano") return renderCartas("ano", "Etapa: Ano", "Agora marque todas as cartas quem contêm o ano, lembrando que o intervalo é do ano 1 ao ano 31", "Mostrar a data", true, "mes", marcadasMes);
   if (fase === "revelacao") return renderRevelacao();
 }
 })();
