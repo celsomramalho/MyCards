@@ -2,13 +2,23 @@
 .su-setup-field { margin-top: 14px; }
 .su-tabuleiro { display: grid; gap: 16px; margin: 12px 0 8px; }
 .su-linha { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; min-height: 74px; align-items: center; }
-.su-card { width: 46px; height: 74px; border: 3px solid var(--navy); border-radius: 23px; padding: 0; cursor: pointer; position: relative; transition: transform .15s, box-shadow .15s; }
+.su-card { width: 46px; height: 74px; border: none; border-radius: 23px; padding: 0; cursor: pointer; position: relative; transition: transform .15s, box-shadow .15s; background-size: cover; background-position: center; background-repeat: no-repeat; }
 .su-card:hover { transform: translateY(-3px); }
-.su-card.linha-1 { background: #22d3ee; }
-.su-card.linha-2 { background: #f2b705; }
-.su-card.linha-3 { background: #157347; }
+.su-card.linha-1[data-carta="0"] { background-image: url("assets/leao.png"); }
+.su-card.linha-1[data-carta="1"] { background-image: url("assets/elefante.png"); }
+.su-card.linha-1[data-carta="2"] { background-image: url("assets/rinoceronte.png"); }
+.su-card.linha-1[data-carta="3"] { background-image: url("assets/bufalo.png"); }
+.su-card.linha-1[data-carta="4"] { background-image: url("assets/leopardo.png"); }
+.su-card.linha-2[data-carta="0"] { background-image: url("assets/espadas.png"); }
+.su-card.linha-2[data-carta="1"] { background-image: url("assets/copas.png"); }
+.su-card.linha-2[data-carta="2"] { background-image: url("assets/ouros.png"); }
+.su-card.linha-2[data-carta="3"] { background-image: url("assets/paus.png"); }
+.su-card.linha-3[data-carta="0"] { background-image: url("assets/piramide.png"); }
+.su-card.linha-3[data-carta="1"] { background-image: url("assets/celular.png"); }
+.su-card.linha-3[data-carta="2"] { background-image: url("assets/foguete.png"); }
 .su-card.selecionada { outline: 3px solid var(--blue); outline-offset: 3px; transform: translateY(-6px); box-shadow: 0 6px 14px rgba(31, 111, 235, .35); }
-.su-card.selecionada::after { content: "✓"; position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; color: #fff; font-weight: 900; font-size: 1.2rem; text-shadow: 0 1px 3px rgba(0, 0, 0, .55); }
+.su-card.selecionada::after { content: "✓"; position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; color: #fff; font-weight: 900; font-size: 1.2rem; text-shadow: 0 1px 3px rgba(0, 0, 0, .85); background: rgba(16, 42, 67, .45); border-radius: 23px; }
+.su-card:disabled, .su-card.ausente { visibility: hidden; }
 .su-restantes { text-align: center; }
 @media (max-width: 480px) {
   .su-card { width: 36px; height: 60px; border-radius: 18px; border-width: 2px; }
