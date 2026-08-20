@@ -4,6 +4,7 @@ Cartas.startRouter = function () {
   var hubButton = document.querySelector("#hubButton");
   var rulesButton = document.querySelector("#rulesButton");
   var globalResetButton = document.querySelector("#globalResetButton");
+  var headerExtra = document.querySelector("#headerExtra");
   var currentGame = null;
 
   function navigate(hash) { location.hash = hash; }
@@ -13,6 +14,8 @@ Cartas.startRouter = function () {
     currentGame = null;
     rulesButton.classList.add("hidden");
     globalResetButton.classList.add("hidden");
+    headerExtra.classList.add("hidden");
+    headerExtra.innerHTML = "";
   }
 
   function route() {
@@ -38,7 +41,8 @@ Cartas.startRouter = function () {
       uid: Cartas.uid,
       voltar: function () { navigate("#/"); },
       rulesButton: rulesButton,
-      globalResetButton: globalResetButton
+      globalResetButton: globalResetButton,
+      headerExtra: headerExtra
     });
   }
 

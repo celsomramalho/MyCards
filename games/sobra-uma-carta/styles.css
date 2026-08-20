@@ -1,0 +1,16 @@
+.su-turno { background: var(--blue-soft); color: #1654a3; border-radius: 12px; padding: 10px 14px; font-weight: 800; display: inline-block; margin: 4px 0 10px; }
+.su-setup-field { margin-top: 14px; }
+.su-tabuleiro { display: grid; gap: 16px; margin: 12px 0 8px; }
+.su-linha { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; min-height: 74px; align-items: center; }
+.su-card { width: 46px; height: 74px; border: 3px solid var(--navy); border-radius: 23px; padding: 0; cursor: pointer; position: relative; transition: transform .15s, box-shadow .15s; }
+.su-card:hover { transform: translateY(-3px); }
+.su-card.linha-1 { background: #22d3ee; }
+.su-card.linha-2 { background: #f2b705; }
+.su-card.linha-3 { background: #157347; }
+.su-card.selecionada { outline: 3px solid var(--blue); outline-offset: 3px; transform: translateY(-6px); box-shadow: 0 6px 14px rgba(31, 111, 235, .35); }
+.su-card.selecionada::after { content: "✓"; position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; color: #fff; font-weight: 900; font-size: 1.2rem; text-shadow: 0 1px 3px rgba(0, 0, 0, .55); }
+.su-restantes { text-align: center; }
+@media (max-width: 480px) {
+  .su-card { width: 36px; height: 60px; border-radius: 18px; border-width: 2px; }
+  .su-linha { gap: 8px; min-height: 60px; }
+}

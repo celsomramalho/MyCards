@@ -9,7 +9,7 @@ Cartas.renderHub = function (container, registry, navigate) {
       (emAndamento ? '<span class="pill">Em andamento</span>' : "") +
       "</button>";
   }).join("");
-  container.innerHTML = '<section class="card narrow"><p class="eyebrow">Jogos de cartas</p><h2>Escolha um jogo</h2><p class="muted">Cada jogo salva o próprio progresso neste dispositivo.</p><div class="game-list">' + cards + "</div></section>";
+  container.innerHTML = '<section class="card narrow"><p class="eyebrow">MyCards</p><h2>Escolha um jogo</h2><p class="muted">Cada jogo salva o próprio progresso neste dispositivo.</p><div class="game-list">' + cards + "</div></section>";
   container.querySelectorAll("[data-jogo]").forEach(function (button) {
     button.addEventListener("click", function () { navigate("#/jogo/" + button.dataset.jogo); });
   });
