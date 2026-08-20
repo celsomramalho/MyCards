@@ -1,5 +1,0 @@
-.game-list { display: grid; gap: 12px; margin-top: 16px; }
-.game-tile { display: block; border: 1px solid var(--border); border-radius: 14px; padding: 16px; text-decoration: none; color: var(--navy); transition: border-color .15s, transform .15s; }
-.game-tile:hover { border-color: var(--blue); transform: translateY(-1px); }
-.game-tile strong { display: block; font-size: 1.1rem; margin-bottom: 4px; }
-.game-tile span { color: var(--muted); font-size: .88rem; }
