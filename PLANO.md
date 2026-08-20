@@ -68,7 +68,7 @@ export default {
 ## Fase 0 — Documento e base
 
 - [x] 0.1 Criar este documento de passo a passo (`PLANO.md`)
-- [ ] 0.2 Validar o plano com o usuário antes de começar a implementar
+- [x] 0.2 Validar o plano com o usuário antes de começar a implementar
 
 ---
 
