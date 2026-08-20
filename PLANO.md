@@ -136,13 +136,13 @@ export default {
 
 ## Fase 4 — Shell, PWA e ajustes finais
 
-- [ ] 4.1 Atualizar `manifest.json`: nome/short_name do hub (não mais "Sobe Desce"),
+- [x] 4.1 Atualizar `manifest.json`: nome/short_name do hub (não mais "Sobe Desce"),
   ícone e cores neutras
-- [ ] 4.2 Atualizar `sw.js`: incluir os novos arquivos (`core/*`, `games/*`, `registry.js`)
+- [x] 4.2 Atualizar `sw.js`: incluir os novos arquivos (`core/*`, `games/*`, `registry.js`)
   na lista de precache; bumpar a versão do cache
-- [ ] 4.3 Garantir que o botão "Voltar" (navegação por hash) funciona de cada jogo para a hub
-- [ ] 4.4 Revisar responsividade no viewport de tablet (1004px) e mobile
-- [ ] 4.5 Smoke test final: hub → Sobe Desce → voltar → Adivinhar data → voltar
+- [x] 4.3 Garantir que o botão "Voltar" (navegação por hash) funciona de cada jogo para a hub
+- [x] 4.4 Revisar responsividade no viewport de tablet (1004px) e mobile
+- [x] 4.5 Smoke test final: hub → Sobe Desce → voltar → Adivinhar data → voltar
 
 ---
 

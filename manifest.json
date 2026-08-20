@@ -1,7 +1,7 @@
 {
-  "name": "Sobe Desce — Placar",
-  "short_name": "Sobe Desce",
-  "description": "Placar para partidas do jogo de cartas Sobe Desce.",
+  "name": "Cartas — Jogos",
+  "short_name": "Cartas",
+  "description": "Jogos de cartas para jogar offline.",
   "start_url": ".",
   "display": "standalone",
   "background_color": "#eef4f8",
@@ -9,4 +9,3 @@
   "lang": "pt-BR",
   "icons": [{ "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }]
 }
-
