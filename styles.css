@@ -121,7 +121,8 @@ td strong { color: var(--navy); }
 .game-card:hover { border-color: var(--blue); transform: translateY(-1px); }
 .game-icon { font-size: 1.8rem; }
 .game-icon img { width: 44px; height: 44px; object-fit: contain; display: block; }
-.game-info { display: flex; flex-direction: column; gap: 2px; flex: 1; }
+.game-info { display: flex; flex-direction: column; align-items: flex-start; gap: 2px; flex: 1; }
+.game-info .pill { margin-top: 6px; }
 .game-info strong { color: var(--navy); font-size: 1.05rem; }
 .game-info .muted { font-size: .82rem; }
 .rules-card { max-width: 900px; margin: 0 auto; }
