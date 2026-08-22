@@ -17,6 +17,7 @@ button, input, select { font: inherit; }
 button { cursor: pointer; }
 .app-shell { max-width: 1180px; margin: 0 auto; padding: 24px 16px 40px; }
 .app-header { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 24px; }
+.app-brand { flex: 0 0 auto; color: var(--blue); font-size: 1rem; font-weight: 750; margin: 0; white-space: nowrap; }
 .home-button { flex: 0 0 auto; padding: 10px 14px; white-space: nowrap; }
 .header-extra { flex: 1 1 auto; display: flex; justify-content: center; min-width: 0; }
 .header-extra:empty { display: none; }
@@ -158,6 +159,7 @@ td strong { color: var(--navy); }
 @media (max-width: 420px) {
   .app-header { display: flex; flex-wrap: nowrap; align-items: flex-start; }
   .home-button { padding: 8px 10px; font-size: .85rem; }
+  .app-brand { font-size: .85rem; }
   #installButton { margin-top: 14px; }
   .round-fields { grid-template-columns: 1fr 1fr; }
   .round-fields > label:nth-child(1) { grid-column: 1; grid-row: 1; }

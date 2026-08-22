@@ -1,4 +1,4 @@
-const CACHE = "cartas-hub-v35";
+const CACHE = "cartas-hub-v39";
 const ASSETS = [
   "./", "./index.html", "./styles.css", "./manifest.json", "./icon.png",
   "./registry.js",

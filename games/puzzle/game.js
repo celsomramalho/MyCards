@@ -273,7 +273,6 @@ Cartas.games = Cartas.games || {};
           '<button class="pz-btn pz-btn-play" data-action="play" type="button" ' + (shuffled || gameOver ? "disabled" : "") + ' aria-label="Embaralhar">' + ICONS.play + '</button>' +
           '<button class="pz-btn pz-btn-swap ' + (swapMode ? "pz-active" : "") + '" data-action="swap" type="button" ' + (swapDisabled ? "disabled" : "") + ' aria-label="Trocar peças">' + swapBtnConteudo + '</button>' +
           '<button class="pz-btn pz-btn-eye" data-action="eye" type="button" aria-label="Ver imagem original">' + ICONS.eye + '</button>' +
-          '<button class="pz-btn pz-btn-home" data-action="home" type="button" aria-label="Voltar">' + ICONS.home + '</button>' +
         '</div>' +
       '</div>' +
       (showCongrats ? renderCongratsModal() : "") +
@@ -306,9 +305,6 @@ Cartas.games = Cartas.games || {};
 
     var btnEye = app.querySelector('[data-action="eye"]');
     if (btnEye) btnEye.addEventListener("click", function () { showOriginal = true; render(); });
-
-    var btnHome = app.querySelector('[data-action="home"]');
-    if (btnHome) btnHome.addEventListener("click", function () { pararTimer(); voltarCtx(); });
 
     if (showCongrats) {
       var btnDeNovo = app.querySelector('[data-action="jogar-de-novo"]');
